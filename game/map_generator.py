@@ -1,6 +1,6 @@
 import random
 from .settings import TILE_SIZE, MAP_WIDTH, MAP_HEIGHT
-
+from .assets_loader import water_img, land_img
 
 class MapGenerator:
     def __init__(self):
@@ -16,11 +16,10 @@ class MapGenerator:
     def get_map(self):
         return self.__map
 
-
-    # def draw_map(self, screen):
-    #     for row in range(len(MAP_DATA)):
-    #         for col in range(len(MAP_DATA[row])):
-    #             if MAP_DATA[row][col] == 0:
-    #                 screen.blit(water_img, (col * TILE_SIZE, row * TILE_SIZE))
-    #             elif MAP_DATA[row][col] == 1:
-    #                 screen.blit(land_img, (col * TILE_SIZE, row * TILE_SIZE))
+    def draw_map(self, screen):
+        for row in range(len(self.__map)):
+            for col in range(len(self.__map[row])):
+                if self.__map[row][col] == 0:
+                    screen.blit(water_img, (col * TILE_SIZE, row * TILE_SIZE))
+                elif self.__map[row][col] == 1:
+                    screen.blit(land_img, (col * TILE_SIZE, row * TILE_SIZE))
