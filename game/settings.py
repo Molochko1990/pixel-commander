@@ -1,8 +1,13 @@
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+# Screen size
+SCREEN_WIDTH = 1920  # 1280 1920 2560
+SCREEN_HEIGHT = 1080  # 720 1080 1440
 
-MAP_WIDTH = 50
-MAP_HEIGHT = 38
+# Map settings
+MAP_WIDTH = SCREEN_WIDTH // 16
+MAP_HEIGHT = SCREEN_HEIGHT // 16
+BORDER_SIZE = 5  # кол-во обязательных тайлов воды на краю игрового поля
+LAND_PROBABILITY = 0.6  # вероятность появления тайла земли
 
+# Other
 TILE_SIZE = 16
 BG_COLOR = (0, 0, 0)

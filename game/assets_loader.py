@@ -11,3 +11,5 @@ def load_image(name):
 
 water_img = load_image('water.png')
 land_img = load_image('land.png')
+land_grass_img = load_image('land_grass.png')
+land_flowers_img = load_image('land_flowers.png')
