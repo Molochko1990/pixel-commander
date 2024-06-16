@@ -13,18 +13,6 @@ class View:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Pixel Commander')
 
-    # def draw_map(self, game_map):
-    #     self.screen.fill(BG_COLOR)
-    #     for row in game_map:
-    #         for tile in row:
-    #             self.screen.blit(tile.image, tile.rect)
-
-        # for city in cities:
-        #     pos = city.get_component('position')
-        #     self.screen.blit(city.image, (pos.x, pos.y))
-        # pygame.display.flip()
-
-
     def draw_map(self, game_map):
         self.screen.fill(BG_COLOR)
         for row in range(len(game_map)):

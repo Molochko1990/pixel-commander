@@ -1,5 +1,5 @@
 import random
-from .settings import TILE_SIZE, MAP_WIDTH, MAP_HEIGHT, BORDER_SIZE, LAND_PROBABILITY
+from .settings import MAP_WIDTH, MAP_HEIGHT, BORDER_SIZE, LAND_PROBABILITY
 from .assets_loader import *
 
 
