@@ -1,17 +1,16 @@
 import pygame
-import os
 
 
-def load_image(name):
-    return pygame.image.load(name)
+IMG_PATHS = {
+    0: 'assets/tiles/terrain/water.png',
+    1: 'assets/tiles/terrain/land.png',
+    2: 'assets/tiles/terrain/land_grass.png',
+    3: 'assets/tiles/terrain/land_flowers.png',
+
+    4: 'assets/tiles/buildings/blue_factory.png',
+    5: 'assets/tiles/buildings/red_factory.png'
+}
 
 
-# terrain
-water_img = load_image('assets/tiles/terrain/water.png')
-land_img = load_image('assets/tiles/terrain/land.png')
-land_grass_img = load_image('assets/tiles/terrain/land_grass.png')
-land_flowers_img = load_image('assets/tiles/terrain/land_flowers.png')
-
-# buildings
-blue_factory = load_image('assets/tiles/buildings/blue_factory.png')
-red_factory = load_image('assets/tiles/buildings/red_factory.png')
+def load_images():
+    return {key: pygame.image.load(path) for key, path in IMG_PATHS.items()}

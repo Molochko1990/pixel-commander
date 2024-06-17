@@ -11,3 +11,12 @@ LAND_PROBABILITY = 0.6  # вероятность появления тайла �
 # Other
 TILE_SIZE = 16
 BG_COLOR = (0, 0, 0)
+
+# Tile ids
+WATER = 0
+LAND = 1
+LAND_GRASS = 2
+LAND_FLOWERS = 3
+
+BLUE_FACTORY = 4
+RED_FACTORY = 5

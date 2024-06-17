@@ -1,7 +1,7 @@
 import pygame
 import sys
-from .map_generator import MapGenerator
-from .mvc.view import View
+from .mvc.model.map_generator import MapGenerator
+from .mvc.view.view import View
 
 
 class Game:
