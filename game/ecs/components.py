@@ -11,13 +11,20 @@ class PositionComponent:
 
 
 class HealthComponent:
-    pass
+    def __init__(self, health):
+        self.health = health
 
 
 class MovementComponent:
-    pass
+    def __init__(self, movement_range):
+        self.movement_range = movement_range
 
 
 class CityComponent:
     def __init__(self):
         self.resources = []
+
+
+class RenderComponent:
+    def __init__(self, image):
+        self.image = image

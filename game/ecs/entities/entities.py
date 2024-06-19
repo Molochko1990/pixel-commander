@@ -10,13 +10,15 @@ class BaseEntity:
         return self.components.get(component_type)
 
 
-class PlayerEntity(BaseEntity):
-    pass
-
-
 class CityEntity(BaseEntity):
     pass
 
 
 class SoldierEntity(BaseEntity):
     pass
+
+
+class TankEntity(BaseEntity):
+    pass
+
+

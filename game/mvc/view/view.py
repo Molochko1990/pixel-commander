@@ -22,3 +22,31 @@ class View:
                 self.screen.blit(tile_image, (col * TILE_SIZE, row * TILE_SIZE))
 
         pygame.display.flip()
+
+    def draw_unit_order_window(self):
+        self.ui_width = 200
+        self.ui_height = SCREEN_HEIGHT
+        self.ui_panel = pygame.Surface((self.ui_width, self.ui_height))
+        self.ui_panel.fill((50, 50, 50))
+        self.buttons = [
+            {"rect": pygame.Rect(10, 10, 180, 50), "color": (100, 200, 100), "text": "Солдат",
+             "callback": 'тут вставить функцию заказа юнита'},
+            {"rect": pygame.Rect(10, 70, 180, 50), "color": (100, 200, 100), "text": "Танк",
+             "callback": 'тут вставить функцию заказа юнита'}
+        ]
+
+        self.ui_panel.fill((50, 50, 50))
+
+        for button in self.buttons:
+            pygame.draw.rect(self.ui_panel, button["color"], button["rect"])
+            font = pygame.font.Font(None, 36)
+            text_surf = font.render(button["text"], True, (255, 255, 255))
+            self.ui_panel.blit(text_surf, (button["rect"].x + 5, button["rect"].y + 10))
+
+        self.screen.blit(self.ui_panel, (SCREEN_WIDTH - self.ui_width, 0))
+
+    def get_cell_under_mouse(self, pos):
+        mouse_x, mouse_y = pos
+        cell_x = mouse_x // TILE_SIZE
+        cell_y = mouse_y // TILE_SIZE
+        return cell_x, cell_y
