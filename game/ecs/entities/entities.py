@@ -1,6 +1,5 @@
 class BaseEntity:
-    def __init__(self, entity_id):
-        self.id = entity_id
+    def __init__(self):
         self.components = {}
 
     def add_component(self, component_type, component_value):

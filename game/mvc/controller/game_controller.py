@@ -2,6 +2,7 @@ import pygame
 import sys
 from ..model.map_generator import MapGenerator
 from ..view.view import View
+from ..model.game_state import GameState
 
 
 class Game:
@@ -13,6 +14,7 @@ class Game:
         self.additional_window_open = False
 
         # создание и управление самой игрой
+        self.game_state = GameState()
         self.map_generator = MapGenerator()
         self.game_map = self.map_generator.get_map()
 
@@ -20,8 +22,14 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.handle_mouse_click(event)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.next_turn()
+
+    def next_turn(self):
+        self.game_state.next_turn()
 
     def handle_mouse_click(self, event):
         cell_x, cell_y = self.view.get_cell_under_mouse(event.pos)
@@ -40,17 +48,19 @@ class Game:
     def draw_ui(self):
         self.view.draw_map(self.game_map)
         if self.additional_window_open:
-            self.view.draw_unit_order_window()
+            self.view.draw_unit_order_window(self.order_unit)
+
         pygame.display.flip()
+
+    def order_unit(self, unit_type):
+        player_id = self.game_state.get_current_player()
+        production_time = {"Солдат": 0, "Танк": 2}.get(unit_type)
+        self.game_state.add_unit_to_production_queue(player_id, unit_type, production_time)
 
     def run(self):
         while self.running:
             self.handle_events()
             self.draw_ui()
-            # self.view.draw_map(self.game_map)
-            # self.view.draw_unit_order_window()
-            #
-            # pygame.display.flip()
             self.clock.tick(60)
 
         pygame.quit()

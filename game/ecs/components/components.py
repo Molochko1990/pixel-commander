@@ -15,12 +15,13 @@ class HealthComponent:
         self.health = health
 
 
-class MovementComponent:
-    def __init__(self, movement_range):
-        self.movement_range = movement_range
+class VelocityComponent:
+    def __init__(self, dx, dy):
+        self.dx = dx
+        self.dy = dy
 
 
-class CityComponent:
+class CityResourcesComponent:
     def __init__(self):
         self.resources = []
 

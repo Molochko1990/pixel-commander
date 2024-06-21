@@ -8,7 +8,16 @@ IMG_PATHS = {
     3: 'assets/tiles/terrain/land_flowers.png',
 
     4: 'assets/tiles/buildings/blue_factory.png',
-    5: 'assets/tiles/buildings/red_factory.png'
+    5: 'assets/tiles/buildings/red_factory.png',
+
+    6: 'assets/tiles/units/blue_soldier.png',
+    7: 'assets/tiles/units/blue_tank.png',
+    8: 'assets/tiles/units/red_soldier.png',
+    9: 'assets/tiles/units/red_tank.png',
+
+    10: 'assets/tiles/other/cursor.png',
+    11: 'assets/tiles/other/fuel.png',
+    12: 'assets/tiles/other/money.png'
 }
 
 
