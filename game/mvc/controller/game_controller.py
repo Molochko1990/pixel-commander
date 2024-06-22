@@ -6,7 +6,7 @@ from ..model.game_state import GameState
 
 
 class Game:
-    def __init__(self):
+    def __init__(self) -> None:
         # создание игрового окна
         self.view = View()
         self.clock = pygame.time.Clock()
@@ -19,7 +19,7 @@ class Game:
         self.game_map = self.map_generator.get_map()
         self.game_state.add_cities(self.game_map)
 
-    def handle_events(self):
+    def handle_events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -29,7 +29,7 @@ class Game:
                 if event.key == pygame.K_SPACE:
                     self.next_turn()
 
-    def handle_mouse_click(self, event):
+    def handle_mouse_click(self, event) -> None:
         mouse_pos = event.pos
         if self.additional_window_open:
             for button in self.view.order_buttons:
@@ -39,16 +39,14 @@ class Game:
             for button in self.view.interface_buttons:
                 if button['rect'].collidepoint(mouse_pos):
                     button['callback']()
-    def next_turn(self):
+
+    def next_turn(self) -> None:
         self.game_state.next_turn()
 
-    def is_city_tile(self, x, y):
-        return self.game_map[y][x] in {4, 5}
-
-    def toggle_additional_window(self):
+    def toggle_additional_window(self) -> None:
         self.additional_window_open = not self.additional_window_open
 
-    def draw_ui(self):
+    def draw_ui(self) -> None:
         self.view.draw_map(self.game_map)
         self.view.draw_interface(self.game_state.next_turn, self.toggle_additional_window)
         if self.additional_window_open:
@@ -57,12 +55,12 @@ class Game:
         self.view.draw_units(self.game_state.entities)
         pygame.display.flip()
 
-    def order_unit(self, unit_type):
+    def order_unit(self, unit_type: str) -> None:  # переделать эту функцию
         player_id = self.game_state.get_current_player()
         production_time = {"Солдат": 0, "Танк": 2}.get(unit_type)
         self.game_state.add_unit_to_production_queue(player_id, unit_type, production_time)
 
-    def run(self):
+    def run(self) -> None:
         while self.running:
             self.handle_events()
             self.draw_ui()

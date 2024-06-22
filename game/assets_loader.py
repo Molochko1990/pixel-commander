@@ -21,5 +21,6 @@ IMG_PATHS = {
 }
 
 
-def load_images():
+def load_images() -> dict:
     return {key: pygame.image.load(path) for key, path in IMG_PATHS.items()}
+

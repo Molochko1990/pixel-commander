@@ -3,15 +3,15 @@ from ...settings import *
 
 
 class MapGenerator:
-    def __init__(self):
+    def __init__(self) -> None:
         self.__map_width = MAP_WIDTH
         self.__map_height = MAP_HEIGHT
         self.__border_size = BORDER_SIZE
         self.__land_probability = LAND_PROBABILITY
         self.__map = self.__generate_world(self.__map_width, self.__map_height, land_probability=self.__land_probability, border_size=self.__border_size)
 
-    def __smooth_map(self):
-        land_tiles = [LAND, LAND_GRASS, LAND_FLOWERS]
+    def __smooth_map(self) -> None:
+        land_tiles: list[int] = [LAND, LAND_GRASS, LAND_FLOWERS]
         weights = [70, 90, 10]
         for row in range(self.__map_height):
             for col in range(self.__map_width):
@@ -21,7 +21,7 @@ class MapGenerator:
                 elif self.__map[row][col] == WATER and land_neighbors > 4:
                     self.__map[row][col] = random.choices(land_tiles, weights=weights, k=1)[0]
 
-    def __count_land_neighbors(self, row, col):
+    def __count_land_neighbors(self, row: int, col: int) -> int:
         land_neighbors = 0
         for i in range(-1, 2):
             for j in range(-1, 2):
@@ -35,7 +35,7 @@ class MapGenerator:
     # def add_shores(self):
     #     pass
 
-    def __has_water_neighbor(self, row, col):
+    def __has_water_neighbor(self, row: int, col: int) -> bool:
         for i in range(-1, 2):
             for j in range(-1, 2):
                 neighbor_row = row + i
@@ -45,7 +45,7 @@ class MapGenerator:
                         return True
         return False
 
-    def __generate_world(self, width: int, height: int, land_probability: float, border_size: int):
+    def __generate_world(self, width: int, height: int, land_probability: float, border_size: int) -> list[list[int]]:
         self.__map = [[WATER for _ in range(width)] for _ in range(height)]
         for row in range(height):
             for col in range(width):
@@ -59,6 +59,6 @@ class MapGenerator:
 
 
 
-    def get_map(self):
+    def get_map(self) -> list[list[int]]:
         return self.__map
 

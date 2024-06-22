@@ -5,7 +5,7 @@ from ...settings import *
 
 
 class GameState:
-    def __init__(self):
+    def __init__(self) -> None:
         # сделать отдельные очереди для обоих игроков
         self.turn = 0
         self.player_id = 0  # 0 - первый игрок, 1 - второй игрок
@@ -14,11 +14,11 @@ class GameState:
         self.entity_counter = 0
         self.production_queue = {0: [], 1: []}
 
-    def add_cities(self, game_map):
+    def add_cities(self, game_map: list[list[int]]) -> None:
         half_width = MAP_WIDTH // 2
         half_height = MAP_HEIGHT // 2
 
-        def generate_city_spawn(top_left, bottom_right):
+        def generate_city_spawn(top_left: tuple[int, int], bottom_right: tuple[int, int]) -> tuple[int, int]:
             while True:
                 row = random.randint(top_left[0], bottom_right[0])
                 col = random.randint(top_left[1], bottom_right[1])
@@ -36,16 +36,16 @@ class GameState:
         self.cities.append(second_city)
 
 
-    def add_entity(self, entity):
+    def add_entity(self, entity) -> None:
         self.entities.append(entity)
 
-    def add_unit_to_production_queue(self, player_id, unit_type, production_time):
+    def add_unit_to_production_queue(self, player_id: int, unit_type: str, production_time: int) -> None:
         self.production_queue[player_id].append((unit_type, production_time))
-        print(f'юнит добавлен в очередь. кол-во юнитов там {self.entities}')
+        print(f'юнит добавлен в очередь. кол-во юнитов там {self.entities}')  # УБРАТЬ ЭТО
 
-    def process_production_queue(self):
+    def process_production_queue(self) -> None:
         for player_id in [0, 1]:
-            new_queue = []
+            new_queue: list[tuple[str, int]] = []
             for unit_type, turns_left in self.production_queue[player_id]:
                 if turns_left > 1:
                     new_queue.append((unit_type, turns_left - 1))
@@ -53,16 +53,16 @@ class GameState:
                     self.create_unit(player_id, unit_type)
             self.production_queue[player_id] = new_queue
 
-    def create_unit(self, player_id, unit_type):
+    def create_unit(self, player_id: int, unit_type: str) -> None:
         if unit_type == "Солдат":
             new_unit = create_soldier()
         # elif unit_type == "Танк":
         #     new_unit = create_tank(player_id)
         self.add_entity(new_unit)
 
-    def next_turn(self):
+    def next_turn(self) -> None:
         self.turn += 1
         self.player_id = (self.player_id + 1) % 2
 
-    def get_current_player(self):
+    def get_current_player(self) -> int:
         return self.player_id

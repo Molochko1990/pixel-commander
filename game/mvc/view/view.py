@@ -6,17 +6,18 @@ from ...settings import TILE_SIZE
 
 
 class View:
-    def __init__(self):
+    def __init__(self) -> None:
         pygame.init()
         game_icon = next(iter(load_images().values()))  # заменить на какую-то другую иконку не забыть
         pygame.display.set_icon(game_icon)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
         pygame.display.set_caption('Pixel Commander')
-        self.IMAGES = load_images()
-        self.interface_buttons = []
-        self.order_buttons = []
 
-    def draw_map(self, game_map):
+        self.IMAGES: dict[int: any] = load_images()  # any это же относится к png картинкам ?
+        self.interface_buttons: list[dict[str: any]] = []
+        self.order_buttons: list[dict[str: any]] = []
+
+    def draw_map(self, game_map: list[list[int]]):
         self.screen.fill(BG_COLOR)
         for row in range(len(game_map)):
             for col in range(len(game_map[0])):
@@ -24,7 +25,7 @@ class View:
                 tile_image = self.IMAGES[tile_value]
                 self.screen.blit(tile_image, (col * TILE_SIZE, row * TILE_SIZE))
 
-    def draw_interface(self, next_turn, toggle_additional_window):
+    def draw_interface(self, next_turn: callable, toggle_additional_window: callable):
         mouse_pos = self.get_mouse_pos()
 
         button_color = (255, 200, 100)
@@ -48,7 +49,7 @@ class View:
             text_rect = text.get_rect(center=button["rect"].center)
             self.screen.blit(text, text_rect)
 
-    def draw_unit_order_window(self, order_unit_callback, toggle_additional_window):
+    def draw_unit_order_window(self, order_unit_callback: callable, toggle_additional_window: callable):
         ui_width = 200
         ui_height = SCREEN_HEIGHT
         ui_panel = pygame.Surface((ui_width, ui_height))
@@ -83,16 +84,17 @@ class View:
 
         self.screen.blit(ui_panel, (0, 0))
 
-    def draw_units(self, unit_entities):
+    def draw_units(self, unit_entities: list[any]): # сюда могут помещаться разные классы например SoldierEntity, TankEntity
         for unit in unit_entities:
             position = unit.get_component('position')
             render = unit.get_component('render')
             self.screen.blit(render.image, (position.x * TILE_SIZE, position.y * TILE_SIZE))
 
     @staticmethod
-    def get_mouse_pos():
+    def get_mouse_pos() -> tuple[int, int]:
         return pygame.mouse.get_pos()
 
+    # возможно можно удалить уже эту функцию
     def get_cell_under_mouse(self, pos):
         mouse_x, mouse_y = pos
         cell_x = mouse_x // TILE_SIZE
