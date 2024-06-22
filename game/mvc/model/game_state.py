@@ -1,19 +1,47 @@
-from ...ecs.entity_creator import create_soldier
+import random
+
+from ...ecs.entity_creator import create_soldier, create_city
+from ...settings import *
+
 
 class GameState:
     def __init__(self):
+        # сделать отдельные очереди для обоих игроков
         self.turn = 0
         self.player_id = 0  # 0 - первый игрок, 1 - второй игрок
+        self.cities = []
         self.entities = []
         self.entity_counter = 0
         self.production_queue = {0: [], 1: []}
 
+    def add_cities(self, game_map):
+        half_width = MAP_WIDTH // 2
+        half_height = MAP_HEIGHT // 2
+
+        def generate_city_spawn(top_left, bottom_right):
+            while True:
+                row = random.randint(top_left[0], bottom_right[0])
+                col = random.randint(top_left[1], bottom_right[1])
+                if game_map[row][col] == LAND:
+                    print(f"Selected land tile at ({row}, {col}) with value {game_map[row][col]}")
+                    return (row, col)
+
+        city1_pos = generate_city_spawn((0, 0), (half_height, half_width))
+        city2_pos = generate_city_spawn((half_height, half_width), (MAP_HEIGHT - 1, MAP_WIDTH - 1))
+
+        first_city = create_city(city1_pos[1],city1_pos[0], player_color=4)
+        second_city = create_city(city2_pos[1],city2_pos[0], player_color=5)
+
+        self.cities.append(first_city)
+        self.cities.append(second_city)
+
+
     def add_entity(self, entity):
         self.entities.append(entity)
-        self.entity_counter += 1
 
     def add_unit_to_production_queue(self, player_id, unit_type, production_time):
         self.production_queue[player_id].append((unit_type, production_time))
+        print(f'юнит добавлен в очередь. кол-во юнитов там {self.entities}')
 
     def process_production_queue(self):
         for player_id in [0, 1]:

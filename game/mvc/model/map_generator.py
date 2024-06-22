@@ -53,26 +53,11 @@ class MapGenerator:
                     if random.random() < land_probability:
                         self.__map[row][col] = LAND
         self.__smooth_map()
-        # self.add_shores()
-        self.add_cities()
+        # self.add_shores() доделать если успею
+        # self.add_cities() переделать и удалить отсюда
         return self.__map
 
-    def add_cities(self):
-        half_width = self.__map_width // 2
-        half_height = self.__map_height // 2
 
-        def place_city_in_region(top_left, bottom_right):
-            while True:
-                row = random.randint(top_left[0], bottom_right[0])
-                col = random.randint(top_left[1], bottom_right[1])
-                if self.__map[row][col] == LAND:
-                    return (row, col)
-
-        city1_pos = place_city_in_region((0, 0), (half_height, half_width))
-        city2_pos = place_city_in_region((half_height, half_width), (self.__map_height - 1, self.__map_width - 1))
-
-        self.__map[city1_pos[0]][city1_pos[1]] = 4
-        self.__map[city2_pos[0]][city2_pos[1]] = 5
 
     def get_map(self):
         return self.__map
