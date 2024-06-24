@@ -43,7 +43,7 @@ class GameState:
         print(f'юнит добавлен в очередь. кол-во юнитов там {self.entities}')  # УБРАТЬ ЭТО
 
     def process_production_queue(self) -> None:
-        for player_id in [0, 1]:
+        for player_id in [BLUE_PLAYER, RED_PLAYER]:
             new_queue: list[tuple[str, int]] = []
             for unit_type, turns_left in self.production_queue[player_id]:
                 if turns_left > 1:
