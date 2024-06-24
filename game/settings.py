@@ -23,4 +23,4 @@ BLUE_PLAYER = 0
 RED_PLAYER = 1
 
 # unit creation time
-unit_creation_time = {"soldier": 0, "tank": 2}  # кол-во ходов для производства юнита
+unit_creation_time = {"soldier": 1, "tank": 2}  # кол-во ходов для производства юнита

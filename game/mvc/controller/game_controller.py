@@ -51,22 +51,22 @@ class Game:
     def draw_ui(self) -> None:
         self.view.draw_map(self.game_map)
         self.view.draw_interface(self.next_turn, self.toggle_additional_window)
-        if self.additional_window_open:
-            self.view.draw_unit_order_window(self.order_unit, self.toggle_additional_window)
         self.view.draw_units(self.game_state.cities)
         self.view.draw_units(self.game_state.entities)
+        if self.additional_window_open:
+            self.view.draw_unit_order_window(self.order_unit, self.toggle_additional_window)
         pygame.display.flip()
 
     def order_unit(self, unit_type: SoldierEntity | TankEntity) -> None:
         player_id = self.game_state.get_current_player()
-        production_turns_for_unit = {SoldierEntity: 0, TankEntity: 2}.get(unit_type)  # почему так? что за ошибка?
+        production_turns_for_unit = {SoldierEntity: 1, TankEntity: 2}.get(unit_type)  # почему так? что за ошибка?
         self.game_state.add_unit_to_production_queue(player_id, unit_type, production_turns_for_unit)
 
     def run(self) -> None:
         while self.running:
             self.handle_events()
             self.draw_ui()
-            self.game_state.process_production_queue()
+            # self.game_state.process_production_queue()
             self.clock.tick(60)
 
         pygame.quit()

@@ -1,6 +1,6 @@
 import pygame
 
-from ...ecs.entities.entities import SoldierEntity, TankEntity
+from ...ecs.entities.entities import SoldierEntity, TankEntity, CityEntity
 from ...assets_loader import load_images
 from ...settings import SCREEN_WIDTH, SCREEN_HEIGHT, BG_COLOR
 from ...settings import TILE_SIZE
@@ -85,8 +85,8 @@ class View:
 
         self.screen.blit(ui_panel, (0, 0))
 
-    def draw_units(self, unit_entities: list[any]): # сюда могут помещаться разные классы например SoldierEntity, TankEntity
-        for unit in unit_entities:
+    def draw_units(self, unit_entities: dict[int, SoldierEntity | TankEntity | CityEntity]): # сюда могут помещаться разные классы например SoldierEntity, TankEntity
+        for unit in unit_entities.values():
             position = unit.get_component('position')
             render = unit.get_component('render')
             self.screen.blit(render.image, (position.x * TILE_SIZE, position.y * TILE_SIZE))
