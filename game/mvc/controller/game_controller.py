@@ -3,6 +3,7 @@ import sys
 from ..model.map_generator import MapGenerator
 from ..view.view import View
 from ..model.game_state import GameState
+from ...ecs.entities.entities import SoldierEntity, TankEntity
 
 
 class Game:
@@ -40,6 +41,7 @@ class Game:
                 if button['rect'].collidepoint(mouse_pos):
                     button['callback']()
 
+    # эту мб убрать отсюда и оставить только в гейм стейт?
     def next_turn(self) -> None:
         self.game_state.next_turn()
 
@@ -48,17 +50,17 @@ class Game:
 
     def draw_ui(self) -> None:
         self.view.draw_map(self.game_map)
-        self.view.draw_interface(self.game_state.next_turn, self.toggle_additional_window)
+        self.view.draw_interface(self.next_turn, self.toggle_additional_window)
         if self.additional_window_open:
             self.view.draw_unit_order_window(self.order_unit, self.toggle_additional_window)
         self.view.draw_units(self.game_state.cities)
         self.view.draw_units(self.game_state.entities)
         pygame.display.flip()
 
-    def order_unit(self, unit_type: str) -> None:  # переделать эту функцию
+    def order_unit(self, unit_type: SoldierEntity | TankEntity) -> None:
         player_id = self.game_state.get_current_player()
-        production_time = {"Солдат": 0, "Танк": 2}.get(unit_type)
-        self.game_state.add_unit_to_production_queue(player_id, unit_type, production_time)
+        production_turns_for_unit = {SoldierEntity: 0, TankEntity: 2}.get(unit_type)  # почему так? что за ошибка?
+        self.game_state.add_unit_to_production_queue(player_id, unit_type, production_turns_for_unit)
 
     def run(self) -> None:
         while self.running:

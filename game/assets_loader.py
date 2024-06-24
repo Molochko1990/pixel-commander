@@ -1,6 +1,7 @@
 import pygame
+from .ecs.entities.entities import SoldierEntity, TankEntity, CityEntity
 
-
+# ВСЕ ЦИФРЫ СДЕЛАТЬ СТРОКАМИ
 IMG_PATHS = {
     0: 'assets/tiles/terrain/water.png',
     1: 'assets/tiles/terrain/land.png',
@@ -18,6 +19,12 @@ IMG_PATHS = {
     10: 'assets/tiles/other/cursor.png',
     11: 'assets/tiles/other/fuel.png',
     12: 'assets/tiles/other/money.png'
+}
+
+UNIT_IMAGES = {
+    CityEntity: {0: 4, 1: 5},
+    SoldierEntity: {0: 6, 1: 8},
+    TankEntity: {0: 7, 1: 9}
 }
 
 

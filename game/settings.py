@@ -18,7 +18,11 @@ LAND = 1
 LAND_GRASS = 2
 LAND_FLOWERS = 3
 
+# Player colors
+BLUE_PLAYER = 0
+RED_PLAYER = 1
 BLUE_FACTORY = 4
 RED_FACTORY = 5
 
 # unit creation time
+unit_creation_time = {"soldier": 0, "tank": 2}  # кол-во ходов для производства юнита

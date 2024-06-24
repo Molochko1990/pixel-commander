@@ -1,5 +1,6 @@
 import pygame
 
+from ...ecs.entities.entities import SoldierEntity, TankEntity
 from ...assets_loader import load_images
 from ...settings import SCREEN_WIDTH, SCREEN_HEIGHT, BG_COLOR
 from ...settings import TILE_SIZE
@@ -13,7 +14,7 @@ class View:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
         pygame.display.set_caption('Pixel Commander')
 
-        self.IMAGES: dict[int: any] = load_images()  # any это же относится к png картинкам ?
+        self.IMAGES: dict[int, any] = load_images()  # any это же относится к png картинкам ?
         self.interface_buttons: list[dict[str: any]] = []
         self.order_buttons: list[dict[str: any]] = []
 
@@ -49,7 +50,7 @@ class View:
             text_rect = text.get_rect(center=button["rect"].center)
             self.screen.blit(text, text_rect)
 
-    def draw_unit_order_window(self, order_unit_callback: callable, toggle_additional_window: callable):
+    def draw_unit_order_window(self, order_unit: callable, toggle_additional_window: callable):
         ui_width = 200
         ui_height = SCREEN_HEIGHT
         ui_panel = pygame.Surface((ui_width, ui_height))
@@ -60,10 +61,10 @@ class View:
         self.order_buttons = [
             {"rect": pygame.Rect(10, 30, 180, 50), "color": button_color, "hover_color": button_hover_color,
              "text": "Солдат",
-             "callback": lambda: order_unit_callback("Солдат")},
+             "callback": lambda: order_unit(SoldierEntity)},
             {"rect": pygame.Rect(10, 100, 180, 50), "color": button_color, "hover_color": button_hover_color,
              "text": "Танк",
-             "callback": lambda: order_unit_callback("Танк")},
+             "callback": lambda: order_unit(TankEntity)},
             {"rect": pygame.Rect(10, 990, 180, 50), "color": button_color, "hover_color": button_hover_color,
              "text": "Закрыть",
              "callback": lambda: toggle_additional_window()}
