@@ -3,7 +3,7 @@ import random
 
 from ...assets_loader import UNIT_IMAGES
 from ...ecs.entities.entities import CityEntity, SoldierEntity, TankEntity
-from ...ecs.entity_creator import create_soldier, create_city, create_entity
+from ...ecs.entity_creator import create_entity
 from ...settings import *
 
 
