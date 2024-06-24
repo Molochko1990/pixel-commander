@@ -33,19 +33,6 @@ class MapGenerator:
                         land_neighbors += 1
         return land_neighbors
 
-    # def add_shores(self):
-    #     pass
-
-    # def __has_water_neighbor(self, row: int, col: int) -> bool:
-    #     for i in range(-1, 2):
-    #         for j in range(-1, 2):
-    #             neighbor_row = row + i
-    #             neighbor_col = col + j
-    #             if (i != 0 or j != 0) and (0 <= neighbor_row < self.__map_height) and (0 <= neighbor_col < self.__map_width):
-    #                 if self.__map[neighbor_row][neighbor_col] == WATER:
-    #                     return True
-    #     return False
-
     def __generate_world(self, width: int, height: int, land_probability: float, border_size: int) -> list[list[int]]:
         self.__map = [[WATER for _ in range(width)] for _ in range(height)]
         for row in range(height):
@@ -56,6 +43,13 @@ class MapGenerator:
         self.__smooth_map()
         # self.add_shores() доделать если успею
         return self.__map
+
+    def generate_city_spawn(self, top_left: tuple[int, int], bottom_right: tuple[int, int]) -> tuple[int, int]:
+        while True:
+            row = random.randint(top_left[0], bottom_right[0])
+            col = random.randint(top_left[1], bottom_right[1])
+            if self.__map[row][col] == LAND:
+                return (row, col)
 
     def get_map(self) -> list[list[int]]:
         return self.__map

@@ -1,5 +1,6 @@
 import random
 
+
 from ...assets_loader import UNIT_IMAGES
 from ...ecs.entities.entities import CityEntity, SoldierEntity, TankEntity
 from ...ecs.entity_creator import create_soldier, create_city, create_entity
@@ -17,25 +18,22 @@ class GameState:
         self.entity_counter = 0
         self.production_queue = {0: [], 1: []}
 
-    def add_cities(self, game_map: list[list[int]]) -> None:
+    def add_cities(self, generate_city_spawn: callable) -> None:
         half_width = MAP_WIDTH // 2
         half_height = MAP_HEIGHT // 2
 
-        def generate_city_spawn(top_left: tuple[int, int], bottom_right: tuple[int, int]) -> tuple[int, int]:
-            while True:
-                row = random.randint(top_left[0], bottom_right[0])
-                col = random.randint(top_left[1], bottom_right[1])
-                if game_map[row][col] == LAND:
-                    return (row, col)
+        blue_city_pos = generate_city_spawn((0, 0), (half_height, half_width))
+        red_city_pos = generate_city_spawn((half_height, half_width), (MAP_HEIGHT - 1, MAP_WIDTH - 1))
 
-        city1_pos = generate_city_spawn((0, 0), (half_height, half_width))
-        city2_pos = generate_city_spawn((half_height, half_width), (MAP_HEIGHT - 1, MAP_WIDTH - 1))
+        blue_city = create_entity(blue_city_pos[1], blue_city_pos[0],
+                                  entity_color=self.get_current_entity_color(CityEntity),
+                                  entity=CityEntity)
+        red_city = create_entity(red_city_pos[1], red_city_pos[0],
+                                 entity_color=self.get_current_entity_color(CityEntity)+1,
+                                 entity=CityEntity)
 
-        first_city = create_city(city1_pos[1], city1_pos[0], player_color=self.get_current_entity_color(CityEntity))
-        second_city = create_city(city2_pos[1], city2_pos[0], player_color=self.get_current_entity_color(CityEntity)+1)
-
-        self.cities.append(first_city)
-        self.cities.append(second_city)
+        self.cities.append(blue_city)
+        self.cities.append(red_city)
 
     def add_entity(self, entity) -> None:
         self.entities.append(entity)
