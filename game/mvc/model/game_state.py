@@ -16,7 +16,7 @@ class GameState:
         self.cities = []
         self.entities = []
         self.entity_counter = 0
-        self.production_queue = {0: [], 1: []}
+        self.production_queue = {0: {}, 1: {}}
 
     def add_cities(self, generate_city_spawn: callable) -> None:
         half_width = MAP_WIDTH // 2
@@ -38,16 +38,17 @@ class GameState:
     def add_entity(self, entity) -> None:
         self.entities.append(entity)
 
-    def add_unit_to_production_queue(self, player_id: int, unit_type, production_time: int) -> None:
-        self.production_queue[player_id].append((unit_type, production_time))
-        print(f'юнит добавлен в очередь. кол-во юнитов там {self.entities}')  # УБРАТЬ ЭТО
+    def add_unit_to_production_queue(self, player_id: int, unit_type: SoldierEntity | TankEntity, production_time: int) -> None:
+        self.production_queue[player_id][unit_type] = production_time
+        print(f'Юнит {player_id} игрока добавлен в очередь. Кол-во юнитов в очереди {self.production_queue}')  # УБРАТЬ ЭТО
 
     def process_production_queue(self) -> None:
-        for player_id in [BLUE_PLAYER, RED_PLAYER]:
-            new_queue: list[tuple[str, int]] = []
-            for unit_type, turns_left in self.production_queue[player_id]:
+        for player_id in self.production_queue:
+            new_queue = {}
+            for unit_type, turns_left in list(self.production_queue[player_id].items()):
+                print(turns_left)
                 if turns_left > 1:
-                    new_queue.append((unit_type, turns_left - 1))
+                    new_queue[unit_type] = turns_left - 1
                 else:
                     self.create_entity(unit_type)
             self.production_queue[player_id] = new_queue
