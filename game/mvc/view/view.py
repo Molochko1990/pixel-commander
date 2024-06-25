@@ -108,6 +108,11 @@ class View:
                 render = unit.get_component('render')
                 self.screen.blit(render.image, (position.x * TILE_SIZE, position.y * TILE_SIZE))
 
+    def draw_selected_unit_marker(self, unit, marker_image):
+        if unit:
+            pos = unit.get_component('position')
+            self.screen.blit(marker_image, (pos.x * TILE_SIZE, pos.y * TILE_SIZE))
+
     @staticmethod
     def get_mouse_pos() -> tuple[int, int]:
         return pygame.mouse.get_pos()

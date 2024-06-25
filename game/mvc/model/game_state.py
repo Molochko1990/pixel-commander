@@ -15,6 +15,7 @@ class GameState:
         self.cities = self.cities = {0: [], 1: []}
         self.entities = {0: [], 1: []}
         self.production_queue = {0: {}, 1: {}}
+        self.selected_unit = None
 
     def add_cities(self, generate_city_spawn: callable) -> None:
         half_width = MAP_WIDTH // 2
@@ -81,3 +82,12 @@ class GameState:
         if player_id is None:
             player_id = self.__player_id
         return self.player_entities_png.get(entity).get(player_id)
+
+    def select_unit(self, unit):
+        self.selected_unit = unit
+
+    def deselect_unit(self):
+        self.selected_unit = None
+
+    def get_selected_unit(self):
+        return self.selected_unit
