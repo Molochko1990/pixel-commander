@@ -19,7 +19,7 @@ class Game:
         self.map_generator = MapGenerator()
         self.game_map = self.map_generator.get_map()
         self.game_state.add_cities(self.map_generator.generate_city_spawn)
-        self.game_state.test_udalit(self.game_map)
+
 
     def handle_events(self) -> None:
         for event in pygame.event.get():
