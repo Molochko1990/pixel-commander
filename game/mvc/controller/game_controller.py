@@ -19,6 +19,7 @@ class Game:
         self.map_generator = MapGenerator()
         self.game_map = self.map_generator.get_map()
         self.game_state.add_cities(self.map_generator.generate_city_spawn)
+        self.game_state.test_udalit(self.game_map)
 
     def handle_events(self) -> None:
         for event in pygame.event.get():
@@ -41,7 +42,6 @@ class Game:
                 if button['rect'].collidepoint(mouse_pos):
                     button['callback']()
 
-    # эту мб убрать отсюда и оставить только в гейм стейт?
     def next_turn(self) -> None:
         self.game_state.next_turn()
 
@@ -59,14 +59,13 @@ class Game:
 
     def order_unit(self, unit_type: SoldierEntity | TankEntity) -> None:
         player_id = self.game_state.get_current_player()
-        production_turns_for_unit = {SoldierEntity: 1, TankEntity: 2}.get(unit_type)  # почему так? что за ошибка?
+        production_turns_for_unit = {SoldierEntity: 1, TankEntity: 2}.get(unit_type)
         self.game_state.add_unit_to_production_queue(player_id, unit_type, production_turns_for_unit)
 
     def run(self) -> None:
         while self.running:
             self.handle_events()
             self.draw_ui()
-            # self.game_state.process_production_queue()
             self.clock.tick(60)
 
         pygame.quit()

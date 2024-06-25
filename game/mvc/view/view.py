@@ -14,7 +14,7 @@ class View:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.DOUBLEBUF)
         pygame.display.set_caption('Pixel Commander')
 
-        self.IMAGES: dict[int, any] = load_images()  # any это же относится к png картинкам ?
+        self.IMAGES: dict[int, pygame.Surface] = load_images()  # any это же относится к png картинкам ?
         self.interface_buttons: list[dict[str: any]] = []
         self.order_buttons: list[dict[str: any]] = []
 
@@ -26,16 +26,20 @@ class View:
                 tile_image = self.IMAGES[tile_value]
                 self.screen.blit(tile_image, (col * TILE_SIZE, row * TILE_SIZE))
 
-    def draw_interface(self, next_turn: callable, toggle_additional_window: callable):
+    def draw_interface(self, next_turn: callable, toggle_additional_window: callable,
+                       current_player: int, turn_count: int):
         mouse_pos = self.get_mouse_pos()
 
         button_color = (255, 200, 100)
         button_hover_color = (200, 200, 200)
 
+        next_turn_button_rect = pygame.Rect(SCREEN_WIDTH - 230, SCREEN_HEIGHT - 80, 220, 50)
+        unit_order_button_rect = pygame.Rect(10, SCREEN_HEIGHT - 80, 180, 50)
+
         self.interface_buttons = [
-            {"rect": pygame.Rect(1690, 1000, 220, 50), "color": button_color, "hover_color": button_hover_color,
+            {"rect": next_turn_button_rect, "color": button_color, "hover_color": button_hover_color,
              "text": "Следующий Ход", "callback": lambda: next_turn()},
-            {"rect": pygame.Rect(10, 1000, 180, 50), "color": button_color, "hover_color": button_hover_color,
+            {"rect": unit_order_button_rect, "color": button_color, "hover_color": button_hover_color,
              "text": "Заказ Юнитов", "callback": lambda: toggle_additional_window()},
         ]
 
@@ -49,6 +53,18 @@ class View:
             text = font.render(button["text"], True, (0, 0, 0))
             text_rect = text.get_rect(center=button["rect"].center)
             self.screen.blit(text, text_rect)
+
+        font = pygame.font.Font(None, 28)
+        current_player_text = f'Текущий игрок: {current_player}'
+        turn_count_text = f'Ход: {turn_count}'
+        current_player_surf = font.render(current_player_text, True, (255, 255, 255))
+        turn_count_surf = font.render(turn_count_text, True, (255, 255, 255))
+
+        current_player_rect = current_player_surf.get_rect(midtop=(SCREEN_WIDTH // 2, 10))
+        turn_count_rect = turn_count_surf.get_rect(midtop=(SCREEN_WIDTH // 2, current_player_rect.bottom + 10))
+
+        self.screen.blit(current_player_surf, current_player_rect)
+        self.screen.blit(turn_count_surf, turn_count_rect)
 
     def draw_unit_order_window(self, order_unit: callable, toggle_additional_window: callable):
         ui_width = 200
@@ -65,7 +81,7 @@ class View:
             {"rect": pygame.Rect(10, 100, 180, 50), "color": button_color, "hover_color": button_hover_color,
              "text": "Танк",
              "callback": lambda: order_unit(TankEntity)},
-            {"rect": pygame.Rect(10, 990, 180, 50), "color": button_color, "hover_color": button_hover_color,
+            {"rect": pygame.Rect(10, ui_height - 60, 180, 50), "color": button_color, "hover_color": button_hover_color,
              "text": "Закрыть",
              "callback": lambda: toggle_additional_window()}
         ]
@@ -85,19 +101,14 @@ class View:
 
         self.screen.blit(ui_panel, (0, 0))
 
-    def draw_units(self, unit_entities: dict[int, SoldierEntity | TankEntity | CityEntity]): # сюда могут помещаться разные классы например SoldierEntity, TankEntity
-        for unit in unit_entities.values():
-            position = unit.get_component('position')
-            render = unit.get_component('render')
-            self.screen.blit(render.image, (position.x * TILE_SIZE, position.y * TILE_SIZE))
+    def draw_units(self, unit_entities: dict[int, SoldierEntity | TankEntity | CityEntity]):
+        for player_id, unit_list in unit_entities.items():
+            for unit in unit_list:
+                position = unit.get_component('position')
+                render = unit.get_component('render')
+                self.screen.blit(render.image, (position.x * TILE_SIZE, position.y * TILE_SIZE))
 
     @staticmethod
     def get_mouse_pos() -> tuple[int, int]:
         return pygame.mouse.get_pos()
 
-    # возможно можно удалить уже эту функцию
-    def get_cell_under_mouse(self, pos):
-        mouse_x, mouse_y = pos
-        cell_x = mouse_x // TILE_SIZE
-        cell_y = mouse_y // TILE_SIZE
-        return cell_x, cell_y

@@ -5,18 +5,17 @@ from ...assets_loader import UNIT_IMAGES
 from ...ecs.entities.entities import CityEntity, SoldierEntity, TankEntity
 from ...ecs.entity_creator import create_entity
 from ...settings import *
+from ...mvc.model.path_finder import a_star_search
 
 
 class GameState:
     def __init__(self) -> None:
-        # сделать отдельные очереди для обоих игроков
         self.__turn = 0
-        self.__player_id = 0  # 0 - первый игрок, синий; 1 - второй игрок, красный
+        self.__player_id = 0
         self.__turn_phase = 0
         self.player_entities_png = UNIT_IMAGES
-        self.cities = {}
-        self.entities = {}
-        self.entity_counter = 0
+        self.cities = self.cities = {0: [], 1: []}
+        self.entities = {0: [], 1: []}
         self.production_queue = {0: {}, 1: {}}
 
     def add_cities(self, generate_city_spawn: callable) -> None:
@@ -33,24 +32,23 @@ class GameState:
                                  entity_color=self.get_entity_color_for_player(CityEntity)+1,
                                  entity=CityEntity)
 
-        self.cities[self.__player_id] = blue_city
-        self.cities[self.__player_id + 1] = red_city
+        self.cities[BLUE_PLAYER].append(blue_city)
+        self.cities[RED_PLAYER].append(red_city)
 
     def add_entity(self, entity) -> None:
-        self.entities[self.__player_id] = entity
+        self.entities[self.__player_id].append(entity)
 
     def add_unit_to_production_queue(self, player_id: int, unit_type, production_time: int) -> None:
         self.production_queue[player_id][unit_type] = production_time
-        print(f'юнит добавлен в очередь. кол-во юнитов там {self.entities}')  # УБРАТЬ ЭТО
+        print(f'юнит добавлен в очередь. кол-во юнитов там {self.production_queue}')
 
     def process_production_queue(self) -> None:
-        self.process_player_production_queue(self.__player_id)
-        self.process_player_production_queue((self.__player_id + 1) % 2)
+        self.process_player_production_queue(BLUE_PLAYER)
+        self.process_player_production_queue(RED_PLAYER)
 
     def process_player_production_queue(self, player_id: int) -> None:
         new_queue = {}
         for unit_type, turns_left in list(self.production_queue[player_id].items()):
-            print(turns_left)
             if turns_left > 1:
                 new_queue[unit_type] = turns_left - 1
             else:
@@ -58,7 +56,9 @@ class GameState:
         self.production_queue[player_id] = new_queue
 
     def create_entity(self, unit_type, player_id: int) -> None:
-        new_unit = create_entity(x=50, y=50, entity_color=self.get_entity_color_for_player(unit_type, player_id), entity=unit_type)
+        city = self.cities[player_id][0]
+        city_position = city.get_component('position')
+        new_unit = create_entity(city_position.x, city_position.y, entity_color=self.get_entity_color_for_player(unit_type, player_id), entity=unit_type)
         self.add_entity(new_unit)
 
     def next_turn(self) -> None:
@@ -76,8 +76,13 @@ class GameState:
     def get_current_player(self) -> int:
         return self.__player_id
 
-
     def get_entity_color_for_player(self, entity: CityEntity | SoldierEntity | TankEntity, player_id: int = None) -> int:
         if player_id is None:
             player_id = self.__player_id
         return self.player_entities_png.get(entity).get(player_id)
+
+    def test_udalit(self, game_map):
+        start = (15, 15)
+        end = (25,18)
+        path = a_star_search(game_map, start, end)
+        print(f"Path from {start} to {end}: {path}")
