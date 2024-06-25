@@ -1,11 +1,9 @@
 import random
 
-
 from ...assets_loader import UNIT_IMAGES
 from ...ecs.entities.entities import CityEntity, SoldierEntity, TankEntity
 from ...ecs.entity_creator import create_entity
 from ...settings import *
-from ...mvc.model.path_finder import a_star_search
 
 
 class GameState:
@@ -76,13 +74,10 @@ class GameState:
     def get_current_player(self) -> int:
         return self.__player_id
 
+    def get_current_turn(self) -> int:
+        return self.__turn
+
     def get_entity_color_for_player(self, entity: CityEntity | SoldierEntity | TankEntity, player_id: int = None) -> int:
         if player_id is None:
             player_id = self.__player_id
         return self.player_entities_png.get(entity).get(player_id)
-
-    def test_udalit(self, game_map):
-        start = (15, 15)
-        end = (25,18)
-        path = a_star_search(game_map, start, end)
-        print(f"Path from {start} to {end}: {path}")

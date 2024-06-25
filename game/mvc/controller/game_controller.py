@@ -50,7 +50,7 @@ class Game:
 
     def draw_ui(self) -> None:
         self.view.draw_map(self.game_map)
-        self.view.draw_interface(self.next_turn, self.toggle_additional_window)
+        self.view.draw_interface(self.next_turn, self.toggle_additional_window, self.game_state.get_current_player(), self.game_state.get_current_turn())
         self.view.draw_units(self.game_state.cities)
         self.view.draw_units(self.game_state.entities)
         if self.additional_window_open:
