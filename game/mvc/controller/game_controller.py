@@ -10,13 +10,11 @@ from ...assets_loader import load_images
 
 class Game:
     def __init__(self) -> None:
-        # создание игрового окна
         self.view = View()
         self.clock = pygame.time.Clock()
         self.running = True
         self.additional_window_open = False
 
-        # создание и управление самой игрой
         self.game_state = GameState()
         self.map_generator = MapGenerator()
         self.game_map = self.map_generator.get_map()

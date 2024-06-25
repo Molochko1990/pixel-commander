@@ -1,5 +1,3 @@
-import random
-
 from ...assets_loader import UNIT_IMAGES
 from ...ecs.entities.entities import CityEntity, SoldierEntity, TankEntity
 from ...ecs.entity_creator import create_entity
