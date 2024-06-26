@@ -4,6 +4,7 @@ from ..model.map_generator import MapGenerator
 from ..view.view import View
 from ..model.game_state import GameState
 from ...ecs.entities.entities import SoldierEntity, TankEntity
+from ...ecs.system.systems import MovementSystem
 from ...settings import TILE_SIZE
 from ...assets_loader import load_images
 
@@ -19,6 +20,8 @@ class Game:
         self.map_generator = MapGenerator()
         self.game_map = self.map_generator.get_map()
         self.game_state.add_cities(self.map_generator.generate_city_spawn)
+        self.movement_system = MovementSystem(self.game_state)
+        self.selected_entity = None
 
         self.selected_marker_image = load_images().get(10)
 
@@ -35,29 +38,46 @@ class Game:
 
     def handle_mouse_click(self, event) -> None:
         mouse_pos = event.pos
-        if self.additional_window_open:
-            for button in self.view.order_buttons:
-                if button['rect'].collidepoint(mouse_pos):
-                    button['callback']()
-        else:
-            for button in self.view.interface_buttons:
-                if button['rect'].collidepoint(mouse_pos):
-                    button['callback']()
+        if event.button == 1:
+            if self.additional_window_open:
+                for button in self.view.order_buttons:
+                    if button['rect'].collidepoint(mouse_pos):
+                        button['callback']()
+            else:
+                for button in self.view.interface_buttons:
+                    if button['rect'].collidepoint(mouse_pos):
+                        button['callback']()
+                self.check_unit_selection(mouse_pos)
+        elif event.button == 3:
+            self.handle_right_click(mouse_pos)
 
-            self.check_unit_selection(mouse_pos)
+    def handle_right_click(self, mouse_pos) -> None:
+        if self.selected_entity:
+            tile_x, tile_y = mouse_pos[0] // TILE_SIZE, mouse_pos[1] // TILE_SIZE
+            if self.movement_system.move_entity(self.selected_entity, (tile_x, tile_y)):
+                print(f'Движение ({tile_x}, {tile_y})')
+            else:
+                print(f'Передвижение невозможно')
 
     def check_unit_selection(self, mouse_pos) -> None:
         tile_x, tile_y = mouse_pos[0] // TILE_SIZE, mouse_pos[1] // TILE_SIZE
-        for player_id, unit_list in self.game_state.entities.items():
-            for unit in unit_list:
-                pos = unit.get_component('position')
+        for player_id, entity_list in self.game_state.entities.items():
+            for entity in entity_list:
+                pos = entity.get_component('position')
                 if pos.x == tile_x and pos.y == tile_y:
-                    self.game_state.select_unit(unit)
+                    self.selected_entity = entity
+                    self.game_state.select_unit(entity)
                     return
+        self.selected_entity = None
         self.game_state.deselect_unit()
 
     def next_turn(self) -> None:
         self.game_state.next_turn()
+        for player_id, entity_list in self.game_state.entities.items():
+            for entity in entity_list:
+                velocity = entity.get_component('velocity')
+                if velocity:
+                    velocity.reset_movement_range()
 
     def toggle_additional_window(self) -> None:
         self.additional_window_open = not self.additional_window_open

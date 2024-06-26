@@ -10,34 +10,30 @@ class GameState:
         self.__player_id = 0
         self.__turn_phase = 0
         self.player_entities_png = UNIT_IMAGES
-        self.cities = self.cities = {0: [], 1: []}
+        self.cities = {0: [], 1: []}
         self.entities = {0: [], 1: []}
-        self.production_queue = {0: {}, 1: {}}
+        self.__production_queue = {0: {}, 1: {}}
         self.selected_unit = None
 
     def add_cities(self, generate_city_spawn: callable) -> None:
-        half_width = MAP_WIDTH // 2
-        half_height = MAP_HEIGHT // 2
+        blue_city_pos = generate_city_spawn((0, 0), (MAP_HEIGHT // 2, MAP_WIDTH // 2))
+        red_city_pos = generate_city_spawn((MAP_HEIGHT // 2, MAP_WIDTH // 2), (MAP_HEIGHT - 1, MAP_WIDTH - 1))
 
-        blue_city_pos = generate_city_spawn((0, 0), (half_height, half_width))
-        red_city_pos = generate_city_spawn((half_height, half_width), (MAP_HEIGHT - 1, MAP_WIDTH - 1))
+        self._create_and_add_city(blue_city_pos, 0)
+        self._create_and_add_city(red_city_pos, 1)
 
-        blue_city = create_entity(blue_city_pos[1], blue_city_pos[0],
-                                  entity_color=self.get_entity_color_for_player(CityEntity),
-                                  entity=CityEntity)
-        red_city = create_entity(red_city_pos[1], red_city_pos[0],
-                                 entity_color=self.get_entity_color_for_player(CityEntity)+1,
-                                 entity=CityEntity)
-
-        self.cities[BLUE_PLAYER].append(blue_city)
-        self.cities[RED_PLAYER].append(red_city)
+    def _create_and_add_city(self, city_pos, player_id: int) -> None:
+        city = create_entity(city_pos[1], city_pos[0],
+                             entity_color=self.get_entity_color_for_player(CityEntity, player_id),
+                             entity=CityEntity, player_id=player_id)
+        self.cities[player_id].append(city)
 
     def add_entity(self, entity) -> None:
         self.entities[self.__player_id].append(entity)
 
     def add_unit_to_production_queue(self, player_id: int, unit_type, production_time: int) -> None:
-        self.production_queue[player_id][unit_type] = production_time
-        print(f'юнит добавлен в очередь. кол-во юнитов там {self.production_queue}')
+        self.__production_queue[player_id][unit_type] = production_time
+        print(f'Юнит добавлен в очередь. Список юнитов: {self.__production_queue}')
 
     def process_production_queue(self) -> None:
         self.process_player_production_queue(BLUE_PLAYER)
@@ -45,17 +41,18 @@ class GameState:
 
     def process_player_production_queue(self, player_id: int) -> None:
         new_queue = {}
-        for unit_type, turns_left in list(self.production_queue[player_id].items()):
+        for unit_type, turns_left in list(self.__production_queue[player_id].items()):
             if turns_left > 1:
                 new_queue[unit_type] = turns_left - 1
             else:
                 self.create_entity(unit_type, player_id)
-        self.production_queue[player_id] = new_queue
+        self.__production_queue[player_id] = new_queue
 
     def create_entity(self, unit_type, player_id: int) -> None:
         city = self.cities[player_id][0]
         city_position = city.get_component('position')
-        new_unit = create_entity(city_position.x, city_position.y, entity_color=self.get_entity_color_for_player(unit_type, player_id), entity=unit_type)
+        new_unit = create_entity(city_position.x, city_position.y, player_id=player_id,
+                                 entity_color=self.get_entity_color_for_player(unit_type, player_id), entity=unit_type)
         self.add_entity(new_unit)
 
     def next_turn(self) -> None:

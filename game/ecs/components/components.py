@@ -1,7 +1,7 @@
 
 class PlayerComponent:
-    def __init__(self, name: str) -> None:
-        self.player_name: str = name
+    def __init__(self, player_id: int) -> None:
+        self.player_id: int = player_id
 
 
 class PositionComponent:
@@ -16,9 +16,19 @@ class HealthComponent:
 
 
 class VelocityComponent:
-    def __init__(self, dx: int, dy: int) -> None:
-        self.dx: int = dx
-        self.dy: int = dy
+    def __init__(self, max_movement_range=3):
+        self.max_movement_range = max_movement_range
+        self.current_movement_range = max_movement_range
+
+    def reset_movement_range(self):
+        self.current_movement_range = self.max_movement_range
+
+    def use_movement(self, distance):
+        if distance <= self.current_movement_range:
+            self.current_movement_range -= distance
+            return True
+        return False
+
 
 
 class CityResourcesComponent:
